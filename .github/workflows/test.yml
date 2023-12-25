@@ -1,4 +1,3 @@
-# Run secret-dependent integration tests only after /deploy approval
 on:
   pull_request:
     branches:
@@ -8,7 +7,6 @@ on:
 name: Edit commnet to match merging commits
 
 jobs:
-  # Repo owner has commented /deploy on a (fork-based) pull request
   edit-comment:
     runs-on: ubuntu-latest
     steps:
@@ -16,15 +14,6 @@ jobs:
       env:
         GITHUB_CONTEXT: ${{ toJson(github) }}
       run: echo "$GITHUB_CONTEXT"
-    # - name: 'PR commits + 1'
-    #   id: pr-commit
-    #   run: echo "PR_FETCH_DEPTH=$(( ${{ github.event.pull_request.commits }} + 1 ))" >> "${GITHUB_OUTPUT}"
-    # - uses: actions/checkout@v4
-    #   id: checkout
-    #   with:
-    #     token: ${{ secrets.GITHUB_TOKEN }}
-    #     ref: ${{ github.event.pull_request.head.sha }}
-    #     fetch-depth: ${{ steps.pr-commit.outputs.PR_FETCH_DEPTH }}
     - uses: actions/github-script@v7
       name: get-pull-description
       id: get-pull-description
@@ -38,7 +27,7 @@ jobs:
           const { data: pull } = await github.rest.pulls.get(pullp)
           core.setOutput('description', pull.body)
 
-    - if: github.event_name == 'pull_request'
+    - if: github.event.action == 'opened'
       uses: actions/github-script@v7
       env:
         description: ${{ steps.get-pull-description.outputs.description }}
@@ -60,7 +49,7 @@ jobs:
           }
           github.rest.pulls.update(params)
   
-    - if: github.event_name == 'synchronize'
+    - if: github.event.action == 'synchronize'
       uses: actions/github-script@v7
       env:
         description: ${{ steps.get-pull-description.outputs.description }}
