@@ -1,6 +1,8 @@
 # Run secret-dependent integration tests only after /deploy approval
 on:
   pull_request:
+    branches:
+      - master
     types: [opened, synchronize]
 
 name: Edit commnet to match merging commits
@@ -22,3 +24,10 @@ jobs:
       with:
         script: |
           console.log(context)
+          const params = {
+            owner: context.repo.owner,
+            repo: context.repo.repo,
+            pull_number: context.payload.pull_request.number,
+            body: 'This is a test comment'
+          }
+          github.rest.pulls.update(params)
