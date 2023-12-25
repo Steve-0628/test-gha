@@ -22,12 +22,13 @@ jobs:
         ref: ${{ github.event.pull_request.head.sha }}
         fetch-depth: ${{ steps.pr-commit.outputs.PR_FETCH_DEPTH }}
     - uses: actions/github-script@v7
-      # env:
+      env:
       #   check_id: ${{ steps.checkout.outputs }}
       #   details_url: ${{ github.server_url }}/${{ github.repository }}/runs/${{ github.run_id }}
+        commits: ${{ github.event.commits }}
       with:
         script: |
-          console.log(github.event.commits)
+          console.log(process.env.commits)
           const params = {
             owner: context.repo.owner,
             repo: context.repo.repo,
