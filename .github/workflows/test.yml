@@ -41,5 +41,5 @@ jobs:
             repo: context.repo.repo,
             pull_number: context.payload.pull_request.number,
           }
-          const resp = await github.rest.pulls.listCommits(params)
-          console.log(resp)
+          const { data } = await github.rest.pulls.listCommits(params)
+          console.log( data.map( c => c.commit ) )
