@@ -28,18 +28,17 @@ jobs:
         commits: ${{ github.event.commits }}
       with:
         script: |
-          console.log(process.env.commits)
+          const pullp = {
+            owner: context.repo.owner,
+            repo: context.repo.repo,
+            pull_number: context.payload.pull_request.number,
+          }
+          const { pull } = await github.rest.pulls.get(pullp)
+          const { data: commits } = await github.rest.pulls.listCommits(pullp)
           const params = {
             owner: context.repo.owner,
             repo: context.repo.repo,
             pull_number: context.payload.pull_request.number,
-            body: 'This is a test comment'
+            body: pull.description + '\n' + commits.map(c => c.commit.message).join('\n'),
           }
           github.rest.pulls.update(params)
-          const p2 = {
-            owner: context.repo.owner,
-            repo: context.repo.repo,
-            pull_number: context.payload.pull_request.number,
-          }
-          const { data } = await github.rest.pulls.listCommits(params)
-          console.log( data.map( c => c.commit ) )
