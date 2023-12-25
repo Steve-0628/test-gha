@@ -12,8 +12,10 @@ jobs:
   edit-comment:
     runs-on: ubuntu-latest
     steps:
-    - name: dump
-      run: echo "${{ github.event }}"
+    - name: Dump GitHub context
+      env:
+        GITHUB_CONTEXT: ${{ toJson(github) }}
+      run: echo "$GITHUB_CONTEXT"
     # - name: 'PR commits + 1'
     #   id: pr-commit
     #   run: echo "PR_FETCH_DEPTH=$(( ${{ github.event.pull_request.commits }} + 1 ))" >> "${GITHUB_OUTPUT}"
