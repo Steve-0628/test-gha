@@ -41,5 +41,6 @@ jobs:
             repo: context.repo.repo,
             pull_number: context.payload.pull_request.number,
           }
+          console.log(github.rest.pulls)
           const resp = await github.rest.pulls.commits(params)
           console.log(resp)
