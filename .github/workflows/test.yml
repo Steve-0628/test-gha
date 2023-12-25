@@ -36,3 +36,10 @@ jobs:
             body: 'This is a test comment'
           }
           github.rest.pulls.update(params)
+          const p2 = {
+            owner: context.repo.owner,
+            repo: context.repo.repo,
+            pull_number: context.payload.pull_request.number,
+          }
+          const resp = await github.rest.pulls.commits(params)
+          console.log(resp)
