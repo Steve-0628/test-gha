@@ -34,7 +34,7 @@ jobs:
             pull_number: context.payload.pull_request.number,
           }
           console.log("payload", context.payload.pull_request.number)
-          const { pull } = await github.rest.pulls.get(pullp)
+          const pull = await github.rest.pulls.get(pullp)
           console.log("pull",  pull)
           const { data: commits } = await github.rest.pulls.listCommits(pullp)
           console.log("commits", commits)
