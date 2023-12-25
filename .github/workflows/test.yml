@@ -1,0 +1,24 @@
+# Run secret-dependent integration tests only after /deploy approval
+on:
+  pull_request:
+    types: [opened, synchronize]
+
+name: Edit commnet to match merging commits
+
+jobs:
+  # Repo owner has commented /deploy on a (fork-based) pull request
+  edit-comment:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v4
+      id: checkout
+      with:
+        token: ${{ secrets.GITHUB_TOKEN }}
+        fetch-depth: 0
+    - uses: actions/github-script@v7
+      # env:
+      #   check_id: ${{ steps.checkout.outputs }}
+      #   details_url: ${{ github.server_url }}/${{ github.repository }}/runs/${{ github.run_id }}
+      with:
+        script: |
+          console.log(context)
