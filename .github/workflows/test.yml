@@ -12,20 +12,20 @@ jobs:
   edit-comment:
     runs-on: ubuntu-latest
     steps:
-    - name: 'PR commits + 1'
-      id: pr-commit
-      run: echo "PR_FETCH_DEPTH=$(( ${{ github.event.pull_request.commits }} + 1 ))" >> "${GITHUB_OUTPUT}"
-    - uses: actions/checkout@v4
-      id: checkout
-      with:
-        token: ${{ secrets.GITHUB_TOKEN }}
-        ref: ${{ github.event.pull_request.head.sha }}
-        fetch-depth: ${{ steps.pr-commit.outputs.PR_FETCH_DEPTH }}
+    - name: dump
+      run: echo "${{ github.event }}"
+    # - name: 'PR commits + 1'
+    #   id: pr-commit
+    #   run: echo "PR_FETCH_DEPTH=$(( ${{ github.event.pull_request.commits }} + 1 ))" >> "${GITHUB_OUTPUT}"
+    # - uses: actions/checkout@v4
+    #   id: checkout
+    #   with:
+    #     token: ${{ secrets.GITHUB_TOKEN }}
+    #     ref: ${{ github.event.pull_request.head.sha }}
+    #     fetch-depth: ${{ steps.pr-commit.outputs.PR_FETCH_DEPTH }}
     - uses: actions/github-script@v7
       env:
-      #   check_id: ${{ steps.checkout.outputs }}
-      #   details_url: ${{ github.server_url }}/${{ github.repository }}/runs/${{ github.run_id }}
-        commits: ${{ github.event.commits }}
+        commits: ${{ github.event.pull_request.head.sha }}
       with:
         script: |
           const pullp = {
