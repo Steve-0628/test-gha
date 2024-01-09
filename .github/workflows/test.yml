@@ -37,11 +37,21 @@ jobs:
           const description = process.env.description
           const { data: commits } = await github.rest.pulls.listCommits(pullp)
           console.log("commits", commits)
+          const processedCommits = commits.map(c => {
+            const msg = c.commit.message
+            if(msg.startsWith('Merge pull request #')) {
+              const firstline = msg.split('\n')[0]
+              const otherlins = msg.split('\n').slice(1)
+              return [...otherlins, firstline].join('\n')
+            } else {
+              return msg
+            }
+          })
           const params = {
             owner: context.repo.owner,
             repo: context.repo.repo,
             pull_number: context.payload.pull_request.number,
-            body: description + '\n\nCommits: \n' + commits.map(c => c.commit.message).join('\n'),
+            body: description + '\n\nCommits: \n' + processedCommits.join('\n'),
           }
           github.rest.pulls.update(params)
   
@@ -69,10 +79,20 @@ jobs:
             }
           }
           console.log("commits", filterdCommits)
+          const processedCommits = filterdCommits.map(c => {
+            const msg = c.commit.message
+            if(msg.startsWith('Merge pull request #')) {
+              const firstline = msg.split('\n')[0]
+              const otherlins = msg.split('\n').slice(1)
+              return [...otherlins, firstline].join('\n')
+            } else {
+              return msg
+            }
+          })
           const params = {
             owner: context.repo.owner,
             repo: context.repo.repo,
             pull_number: context.payload.pull_request.number,
-            body: description + '\n' + filterdCommits.map(c => c.commit.message).join('\n'),
+            body: description + '\n' + processedCommits.join('\n'),
           }
           github.rest.pulls.update(params)
