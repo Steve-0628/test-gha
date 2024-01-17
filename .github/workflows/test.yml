@@ -36,13 +36,12 @@ jobs:
           }
           const description = process.env.description
           const { data: commits } = await github.rest.pulls.listCommits(pullp)
-          console.log("commits", commits)
           const processedCommits = commits.map(c => {
             const msg = c.commit.message
             if(msg.startsWith('Merge pull request #')) {
               const firstline = msg.split('\n')[0]
-              const otherlins = msg.split('\n').slice(1)
-              return [...otherlins, firstline].join('\n')
+              const otherlines = msg.split('\n').slice(1)
+              return [...otherlines, firstline].join('\n')
             } else {
               return msg
             }
@@ -54,7 +53,7 @@ jobs:
             body: description + '\n\nCommits: \n' + processedCommits.join('\n'),
           }
           github.rest.pulls.update(params)
-  
+
     - if: github.event.action == 'synchronize'
       uses: actions/github-script@v7
       env:
@@ -78,13 +77,12 @@ jobs:
               adding = true
             }
           }
-          console.log("commits", filterdCommits)
           const processedCommits = filterdCommits.map(c => {
             const msg = c.commit.message
             if(msg.startsWith('Merge pull request #')) {
               const firstline = msg.split('\n')[0]
-              const otherlins = msg.split('\n').slice(1)
-              return [...otherlins, firstline].join('\n')
+              const otherlines = msg.split('\n').slice(1)
+              return [...otherlines, firstline].join('\n')
             } else {
               return msg
             }
