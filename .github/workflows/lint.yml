@@ -1,0 +1,43 @@
+on:
+    pull_request:
+      branches:
+        - master
+      types: [opened, synchronize]
+
+name: check lint or do lint
+
+jobs:
+    check-lint:
+        name: lint
+        runs-on: ubuntu-latest
+        steps: 
+            - name: checkout
+              uses: actions/checkout@v4
+            - name: install dependencies
+              run: npm install
+            - name: lint
+              id: lint
+              run: |
+                set +e
+                npm run lint
+                exitcode="$?"
+                echo "exitcode=$exitcode" >> $GITHUB_OUTPUT
+                exit "$exitcode"
+            # - if: steps.lint.outputs.exitcode == 0
+            #   name: commit lint
+            #   run: |
+            #     git config --global user.email "github-actions[bot]@users.noreply.github.com"
+            #     git config --global user.name "github-actions[bot]"
+            #     git add .
+            #     git commit -m "lint"
+            #     git push
+            # - if: steps.lint.outputs.exitcode != 0
+            #   name: comment to pr
+            #   run: |
+            #     echo "lint failed" >> $GITHUB_OUTPUT
+            #     echo "lint failed"
+            #     exit 1
+            - name: log lint result
+              run: |
+                echo "lint result: ${{ steps.lint.outputs.exitcode }}"
+                echo "lint result: ${{ steps.lint.outputs.exitcode }}" >> $GITHUB_OUTPUT
