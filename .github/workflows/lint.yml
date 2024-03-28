@@ -29,8 +29,7 @@ jobs:
                 git diff --exit-code
                 exitcode="$?"
                 echo "exitcode=$exitcode" >> $GITHUB_OUTPUT
-                exit "$exitcode"
-                # - if: steps.lint.outputs.exitcode == 0
+            # - if: steps.lint.outputs.exitcode == 0
             #   name: commit lint
             #   run: |
             #     git config --global user.email "github-actions[bot]@users.noreply.github.com"
