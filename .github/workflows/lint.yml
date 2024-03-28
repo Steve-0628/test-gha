@@ -29,26 +29,26 @@ jobs:
                 git diff --exit-code
                 exitcode="$?"
                 echo "exitcode=$exitcode" >> $GITHUB_OUTPUT
-            - name: comment
+            - if: steps.check-diff.outputs.exitcode == 0
+              name: comment
               env: 
                 GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
               run: |
-                gh pr comment ${{ github.event.pull_request.number }} --body "lint result: ${{ steps.check-diff.outputs.exitcode }}"
-            
+                gh pr comment ${{ github.event.pull_request.number }} --body ":tada: Lint passed!"
+            - if: steps.check-diff.outputs.exitcode != 0
+              name: comment
+              env: 
+                  GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+              run: |
+                  git config --global user.email "github-actions[bot]@users.noreply.github.com"
+                  git config --global user.name "github-actions[bot]"
+                  git add .
+                  git commit -m "lint"
+                  git push
+                  gh pr comment ${{ github.event.pull_request.number }} --body "lint failed"
             # - if: steps.lint.outputs.exitcode == 0
             #   name: commit lint
             #   run: |
-            #     git config --global user.email "github-actions[bot]@users.noreply.github.com"
-            #     git config --global user.name "github-actions[bot]"
-            #     git add .
-            #     git commit -m "lint"
-            #     git push
-            # - if: steps.lint.outputs.exitcode != 0
-            #   name: comment to pr
-            #   run: |
-            #     echo "lint failed" >> $GITHUB_OUTPUT
-            #     echo "lint failed"
-            #     exit 1
             - name: log lint result
               run: |
                 echo "lint result: ${{ steps.check-diff.outputs.exitcode }}"
