@@ -29,6 +29,12 @@ jobs:
                 git diff --exit-code
                 exitcode="$?"
                 echo "exitcode=$exitcode" >> $GITHUB_OUTPUT
+            - name: comment
+              env: 
+                GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+              run: |
+                gh pr comment ${{ github.event.pull_request.number }} --body "lint result: ${{ steps.check-diff.outputs.exitcode }}"
+            
             # - if: steps.lint.outputs.exitcode == 0
             #   name: commit lint
             #   run: |
