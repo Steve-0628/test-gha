@@ -46,9 +46,10 @@ jobs:
                   git add .
                   git commit -m "lint"
                   git push
-            - if: steps.check-diff.outputs.exitcode != 0
+                  gh pr comment ${{ github.event.pull_request.number }} --body ":white_check_mark: Lint fixed"
+            - if: steps.check-diff.outputs.exitcode != 0 && github.event.action == 'opened'
               name: comment
               env:
                   GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
               run: |
-                  gh pr comment ${{ github.event.pull_request.number }} --body ":white_check_mark: Lint fixed"
+                  gh pr comment ${{ github.event.pull_request.number }} --body ":ng: Lint failed"
