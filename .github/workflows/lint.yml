@@ -10,7 +10,7 @@ jobs:
     check-lint:
         name: lint
         runs-on: ubuntu-latest
-        if: github.event.action == 'opened' || (github.event.action == 'labeled' && contains(github.event.label.name, 'run-fmt'))
+        if: github.event.action == 'opened' || (github.event.action == 'labeled' && github.event.label.name == 'run-fmt')
         steps: 
             - name: checkout
               uses: actions/checkout@v4      
@@ -46,7 +46,7 @@ jobs:
                   git add .
                   git commit -m "lint"
                   git push
-                  gh pr comment ${{ github.event.pull_request.number }} --body "lint failed"
+                  gh pr comment ${{ github.event.pull_request.number }} --body ":white_check_mark: Lint fixed"
             # - if: steps.lint.outputs.exitcode == 0
             #   name: commit lint
             #   run: |
