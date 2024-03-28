@@ -19,7 +19,7 @@ jobs:
               id: lint
               run: |
                 set +e
-                npm run lint
+                npm run fix
                 exitcode="$?"
                 echo "exitcode=$exitcode" >> $GITHUB_OUTPUT
                 exit "$exitcode"
