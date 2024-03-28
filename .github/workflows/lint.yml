@@ -35,8 +35,8 @@ jobs:
                 GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
               run: |
                 gh pr comment ${{ github.event.pull_request.number }} --body ":tada: Lint passed!"
-            - if: steps.check-diff.outputs.exitcode != 0
-              name: comment
+            - if: steps.check-diff.outputs.exitcode != 0 && (github.event.action == 'labeled' && github.event.label.name == 'run-fmt')
+              name: push on labeled run
               env: 
                   GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
               run: |
@@ -46,4 +46,9 @@ jobs:
                   git add .
                   git commit -m "lint"
                   git push
+            - if: steps.check-diff.outputs.exitcode != 0
+              name: comment
+              env:
+                  GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+              run: |
                   gh pr comment ${{ github.event.pull_request.number }} --body ":white_check_mark: Lint fixed"
