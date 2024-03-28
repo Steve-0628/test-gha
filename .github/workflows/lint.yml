@@ -47,9 +47,3 @@ jobs:
                   git commit -m "lint"
                   git push
                   gh pr comment ${{ github.event.pull_request.number }} --body ":white_check_mark: Lint fixed"
-            # - if: steps.lint.outputs.exitcode == 0
-            #   name: commit lint
-            #   run: |
-            - name: log lint result
-              run: |
-                echo "lint result: ${{ steps.check-diff.outputs.exitcode }}"
