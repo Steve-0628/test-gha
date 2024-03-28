@@ -1,8 +1,8 @@
 on:
     pull_request:
-      branches:
-        - master
-      types: [opened, synchronize]
+        branches:
+            - master
+        types: [opened, labeled]
 
 name: check lint or do lint
 
@@ -10,6 +10,7 @@ jobs:
     check-lint:
         name: lint
         runs-on: ubuntu-latest
+        if: github.event.action == 'opened' || (github.event.action == 'labeled' && contains(github.event.label.name, 'run-lint'))
         steps: 
             - name: checkout
               uses: actions/checkout@v4      
