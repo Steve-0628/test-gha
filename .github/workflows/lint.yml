@@ -16,14 +16,21 @@ jobs:
             - name: install dependencies
               run: npm install
             - name: lint
-              id: lint
               run: |
                 set +e
                 npm run fix
                 exitcode="$?"
                 echo "exitcode=$exitcode" >> $GITHUB_OUTPUT
                 exit "$exitcode"
-            # - if: steps.lint.outputs.exitcode == 0
+            - name: check diff
+              id: check-diff
+              run: |
+                set +e
+                git diff --exit-code
+                exitcode="$?"
+                echo "exitcode=$exitcode" >> $GITHUB_OUTPUT
+                exit "$exitcode"
+                # - if: steps.lint.outputs.exitcode == 0
             #   name: commit lint
             #   run: |
             #     git config --global user.email "github-actions[bot]@users.noreply.github.com"
@@ -39,5 +46,4 @@ jobs:
             #     exit 1
             - name: log lint result
               run: |
-                echo "lint result: ${{ steps.lint.outputs.exitcode }}"
-                echo "lint result: ${{ steps.lint.outputs.exitcode }}" >> $GITHUB_OUTPUT
+                echo "lint result: ${{ steps.check-diff.outputs.exitcode }}"
