@@ -20,12 +20,18 @@ jobs:
         id: get_tag
         run: |
           MERGED_LABELS="${{ join(github.event.pull_request.labels.*.name) }}"
+          echo a
           RELEASE_LABEL=$(echo $MERGED_LABELS | grep -o 'release/.*' | head -n 1)
+          echo b
           [[ "$RELEASE_LABEL" =~ ^release/(.*)$ ]]
+          echo c
           TAG=${BASH_REMATCH[0]}
+          echo d
           if [ $TAG = '' ]; then
+            echo e
             echo "::set-output name=release_tag::release/$(date +'%Y%m%d')"
           else
+            echo f
             echo "::set-output name=release_tag::$TAG"
           fi
         env:
