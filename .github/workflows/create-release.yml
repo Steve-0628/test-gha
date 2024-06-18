@@ -23,9 +23,11 @@ jobs:
           echo a
           RELEASE_LABEL=$(echo $MERGED_LABELS | grep -o 'release/.*' | head -n 1)
           echo b
-          [[ "$RELEASE_LABEL" =~ ^release/(.*)$ ]]
+          TAG=''
+          if [[ "$RELEASE_LABEL" =~ ^release/(.*)$ ]] && [[ BASH_REMATCH[0] != '' ]] then;
           echo c
-          TAG=${BASH_REMATCH[0]}
+            TAG=${BASH_REMATCH[0]}
+          fi
           echo d
           if [ $TAG = '' ]; then
             echo e
